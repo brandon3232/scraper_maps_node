@@ -1,16 +1,26 @@
 import puppeteer from "puppeteer"
 
-async function openWepPage() {
-    const browser = await puppeteer.launch({
-        headless: false,
-        slowMo: 400
-    })
-    const page = await browser.newPage()
+async function openWepPage(url, searchQuery) {
+    try {
+        const browser = await puppeteer.launch({headless: false, slowMo:100, })
+        const page = await browser.newPage()
+        await page.setViewport({width: 1080, height: 1024});
+        await page.goto(url)
+        await page.focus('input[id="searchboxinput"]')
+        await page.keyboard.type(searchQuery)
+        await page.keyboard.press("Enter")
 
-    await page.goto("https://www.google.com")
+        setTimeout(async () => {
+            await browser.close()
 
-    await page.screenshot({ path: "screenshot.png" })
+        },8000)       
 
-    await browser.close()
+        
+    } catch (error) {
+        console.log("Error: ", error)
+    }
 }
-openWepPage()
+
+const url = "https://www.google.com/maps"
+
+openWepPage(url, "Blvd. 18 Sur 5944, puebla")
